@@ -221,14 +221,13 @@ type LogRemoveImplementationEvent implements ILog @entity {
   timestamp: BigInt!
 }
 
-type LogSpellEvent implements ILog @entity {
-  id: ID!
+type LogSpell @entity {
+  id: ID!  # logCastid + spellIndex
   targetName: String!
   target: Bytes!  # Address
   eventName: String!
   eventParams: Bytes!
   cast: LogCastEvent!
-  timestamp: BigInt!
 }
 
 type LogCastEvent implements ILog @entity {
@@ -236,7 +235,7 @@ type LogCastEvent implements ILog @entity {
   origin: Bytes!  # Address
   sender: Bytes!  # Address
   value: BigInt!
-  spells: [LogSpellEvent!] @derivedFrom(field: "cast")
+  spells: [LogSpell!] @derivedFrom(field: "cast")
   totalSpells: BigInt!
   timestamp: BigInt!
 }

@@ -83,7 +83,7 @@ export function upsertAccountOwner(
   accountAddress: Address,
   ownerAddress: Address,
   createdAt: BigInt
-): void {
+): string {
   let version: BigInt = increaseAccountOwnerLatestVersion(
     accountAddress,
     ownerAddress
@@ -91,7 +91,11 @@ export function upsertAccountOwner(
 
   let accountOwnerListId = accountAddress.toHex() + "-" + ownerAddress.toHex();
   let accountOwnerId: string =
-    accountAddress.toHex() + "-" + ownerAddress.toHex() + "-" + version.toString();
+    accountAddress.toHex() +
+    "-" +
+    ownerAddress.toHex() +
+    "-" +
+    version.toString();
   let dbAccountOwner = new AccountOwner(accountOwnerId);
   dbAccountOwner.version = version;
   dbAccountOwner.createdAt = createdAt;
@@ -110,4 +114,26 @@ export function upsertAccountOwner(
     dbOldAccountOwner.deletedAt = createdAt;
     dbOldAccountOwner.save();
   }
+  return accountOwnerId;
+}
+
+export function deleteAccountOwner(
+  accountAddress: Address,
+  ownerAddress: Address,
+  deletedAt: BigInt
+): string {
+  let dbAccountOwnerList: AccountOwnerList = ensureAccountOwnerList(
+    accountAddress,
+    ownerAddress
+  );
+  let accountOwnerId: string =
+    accountAddress.toHex() +
+    "-" +
+    ownerAddress.toHex() +
+    "-" +
+    dbAccountOwnerList.latestVersion.toString();
+  let dbAccountOwner = AccountOwner.load(accountOwnerId);
+  dbAccountOwner.deletedAt = deletedAt;
+  dbAccountOwner.save();
+  return accountOwnerId;
 }
