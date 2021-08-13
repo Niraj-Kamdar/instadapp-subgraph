@@ -1,0 +1,279 @@
+#################################################
+# Interfaces
+#################################################
+
+interface ILog {
+  id: ID!
+  timestamp: BigInt!
+}
+
+interface IContract {
+  id: ID!
+  createdAt: BigInt!
+}
+
+interface IEditableParent {
+  id: ID!
+  latestVersion: BigInt!
+}
+
+interface IEditable {
+  id: ID!
+  version: BigInt!
+  createdAt: BigInt!
+  deletedAt: BigInt
+}
+
+#################################################
+# High level Entities
+#################################################
+
+# index setBasics callHandler since no event emited
+type InstaIndex implements IContract @entity {
+  id: ID!
+  master: Bytes!  # Address
+  newMaster: Bytes!  # Address
+  instaList: InstaList!
+  versions: [Version!] @derivedFrom(field: "instaIndex")
+  latestVersion: Version!
+  createdAt: BigInt!
+}
+
+type Version implements IContract @entity {
+  id: ID! # version number
+  instaAccount: InstaAccount!
+  instaConnectors: InstaConnectors!
+  check: Bytes!  # Address
+  instaIndex:  InstaIndex!
+  createdAt: BigInt!
+}
+
+type InstaList implements IContract @entity {
+  id: ID!
+  instaIndex: InstaIndex!
+  accounts: [Account!] @derivedFrom(field: "instaList")
+  totalAccounts: BigInt!
+  createdAt: BigInt!
+}
+
+type Account @entity {
+  id: ID! # address
+  accountNumber: BigInt!
+  instaList: InstaList!
+  version: Version!
+  owners: [AccountOwnerList!] @derivedFrom(field: "account")
+  createdAt: BigInt!
+}
+
+type Owner @entity {
+  id: ID!
+  accounts: [AccountOwnerList!] @derivedFrom(field: "owner")
+}
+
+type AccountOwnerList implements IEditableParent @entity {
+  id: ID! # accountId-ownerId
+  account: Account!
+  owner: Owner!
+  accountOwners: [AccountOwner!]
+  latestVersion: BigInt!
+}
+
+type AccountOwner implements IEditable @entity {
+  id: ID! #accountId-ownerId-version
+  accountOwnerList: AccountOwnerList!
+  version: BigInt!
+  createdAt: BigInt!
+  deletedAt: BigInt
+}
+
+type InstaAccount implements IContract @entity {
+  id: ID!
+  version: Version!
+  instaImplementations: InstaImplementations  # Only available for V2
+  createdAt: BigInt!
+}
+
+type InstaImplementations implements IContract @entity {
+  id: ID!
+  instaAccount: InstaAccount!
+  defaultImplementation: Bytes  # Address
+  implementations: [Implementation!] @derivedFrom(field: "instaImplementations")
+  createdAt: BigInt!
+}
+
+type Implementation @entity {
+  id: ID!
+  signatures: [Signature!] @derivedFrom(field: "implementation")
+  totalSignatures: Int!
+  instaImplementations: InstaImplementations
+  createdAt: BigInt!
+  deletedAt: BigInt
+}
+
+type Signature @entity {
+  id: ID!
+  signature: Bytes!
+  implementation: Implementation!
+}
+
+type InstaConnectors implements IContract @entity {
+  id: ID!
+  chiefs: [Chief!] @derivedFrom(field: "instaConnectors")
+  connectors: [Connector!] @derivedFrom(field: "instaConnectors")
+  totalChiefs: BigInt!
+  totalActiveChiefs: BigInt!
+  totalConnectors: BigInt!
+  totalActiveConnectors: BigInt!
+  version: Version!
+  createdAt: BigInt!
+}
+
+type ChiefList implements IEditableParent @entity {
+  id: ID!
+  chiefs: [Chief!] @derivedFrom(field: "chiefList")
+  latestVersion: BigInt!
+}
+
+type Chief implements IEditable @entity {
+  id: ID!
+  address: Bytes!  # Address
+  isActive: Boolean!
+  instaConnectors: InstaConnectors!
+  chiefList: ChiefList!
+  version: BigInt!
+  createdAt: BigInt!
+  deletedAt: BigInt
+}
+
+type ConnectorList implements IEditableParent @entity {
+  id: ID!
+  connectors: [Connector!] @derivedFrom(field: "connectorList")
+  latestVersion: BigInt!
+}
+
+type Connector implements IEditable @entity {
+  id: ID!  # same as nameHash
+  address: Bytes!  # Address
+  name: String!
+  nameHash: Bytes!
+  instaConnectors: InstaConnectors!
+  connectorList: ConnectorList!
+  version: BigInt!
+  createdAt: BigInt!
+  deletedAt: BigInt
+}
+
+#################################################
+# Events
+#################################################
+
+type LogNewMasterEvent implements ILog @entity {
+  id: ID!
+  master: Bytes!  # Address
+  timestamp: BigInt!
+}
+
+type LogUpdateMasterEvent implements ILog @entity {
+  id: ID!
+  master: Bytes!  # Address
+  timestamp: BigInt!
+}
+
+type LogNewCheckEvent implements ILog @entity {
+  id: ID!
+  version: BigInt!
+  check: Bytes!  # Address
+  timestamp: BigInt!
+}
+
+type LogNewAccountEvent implements ILog @entity {
+  id: ID!
+  version: Version!
+  timestamp: BigInt!
+}
+
+type LogAccountCreatedEvent implements ILog @entity {
+  id: ID!
+  sender: Bytes!  # Address
+  owner: Bytes!  # Address
+  account: Bytes!  # Address
+  origin: Bytes!  # Address
+  version: String! # (Event doesn't emit)
+  timestamp: BigInt!
+}
+
+type LogSetDefaultImplementationEvent implements ILog @entity {
+  id: ID!
+  oldImplementation: Bytes!  # Address
+  newImplementation: Bytes!  # Address
+  timestamp: BigInt!
+}
+
+type LogAddImplementationEvent implements ILog @entity {
+  id: ID!
+  implementation: Implementation!
+  timestamp: BigInt!
+}
+
+type LogRemoveImplementationEvent implements ILog @entity {
+  id: ID!
+  implementation: Implementation!
+  timestamp: BigInt!
+}
+
+type LogSpellEvent implements ILog @entity {
+  id: ID!
+  targetName: String!
+  target: Bytes!  # Address
+  eventName: String!
+  eventParams: Bytes!
+  cast: LogCastEvent!
+  timestamp: BigInt!
+}
+
+type LogCastEvent implements ILog @entity {
+  id: ID!
+  origin: Bytes!  # Address
+  sender: Bytes!  # Address
+  value: BigInt!
+  spells: [LogSpellEvent!] @derivedFrom(field: "cast")
+  totalSpells: BigInt!
+  timestamp: BigInt!
+}
+
+type LogEnableUserEvent implements ILog @entity {
+  id: ID!
+  accountOwner: AccountOwner!
+  timestamp: BigInt!
+}
+
+type LogDisableUserEvent implements ILog @entity {
+  id: ID!
+  accountOwner: AccountOwner!
+  timestamp: BigInt!
+}
+
+type LogControllerEvent implements ILog @entity {
+  id: ID!
+  chief: Chief!
+  timestamp: BigInt!
+}
+
+type LogConnectorAddedEvent implements ILog @entity {
+  id: ID!
+  connector: Connector!
+  timestamp: BigInt!
+}
+
+type LogConnectorUpdatedEvent implements ILog @entity {
+  id: ID!
+  oldConnector: Connector!
+  newConnector: Connector!
+  timestamp: BigInt!
+}
+
+type LogConnectorRemovedEvent implements ILog @entity {
+  id: ID!
+  connector: Connector!
+  timestamp: BigInt!
+}

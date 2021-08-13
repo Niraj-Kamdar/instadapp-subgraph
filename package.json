@@ -1,0 +1,22 @@
+{
+  "name": "instadapp-subgraph",
+  "version": "0.1.0",
+  "scripts": {
+    "format": "prettier --write \"./**/*.{js,jsx,json,ts}\"",
+    "create": "graph create niraj-kamdar/instadapp --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create niraj-kamdar/instadapp --node http://127.0.0.1:8020",
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy niraj-kamdar/instadapp --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy niraj-kamdar/instadapp --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.20.1",
+    "@graphprotocol/graph-ts": "^0.20.0",
+    "pretier": "^0.0.1"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0"
+  }
+}
