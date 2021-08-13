@@ -17,8 +17,10 @@ export function createAccount(
 ): void {
   let instaAccountContract = InstaAccountContract.bind(address);
   let accountVersionResult = instaAccountContract.try_version();
-  if(accountVersionResult.reverted){
-    log.critical("version() call got reverted for account: {}!", [address.toHex()]);
+  if (accountVersionResult.reverted) {
+    log.critical("version() call got reverted for account: {}!", [
+      address.toHex()
+    ]);
     return;
   }
   let accountVersion: BigInt = accountVersionResult.value;

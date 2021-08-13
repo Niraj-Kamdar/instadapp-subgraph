@@ -2,6 +2,7 @@ import { InstaImplementations as InstaImplementationsMapping } from "./../../gen
 import { Proxy } from "./../../generated/InstaIndex/Proxy";
 import { InstaAccount } from "../../generated/schema";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { createInstaImplementations } from "./InstaImplementations";
 
 export function createInstaAccount(
   address: Address,
@@ -12,6 +13,7 @@ export function createInstaAccount(
   let proxy = Proxy.bind(address);
   let implementationsResult = proxy.try_implementations();
   if (!implementationsResult.reverted) {
+    createInstaImplementations(implementationsResult.value, address, createdAt);
     InstaImplementationsMapping.create(implementationsResult.value);
   }
   let dbInstaAccount = new InstaAccount(address.toHex());
