@@ -1,0 +1,109 @@
+specVersion: 0.0.2
+description: Instadapp Subgraph on Mainnet
+# repository: https://github.com/graphprotocol/example-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: InstaIndex
+    network: mainnet
+    source:
+      address: '0x2971adfa57b20e5a416ae5a708a8655a9c74f723'
+      startBlock: 9747241
+      abi: InstaIndex
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaIndex
+          file: ./abis/InstaIndex.json
+        - name: Proxy
+          file: ./abis/Proxy.json
+        - name: InstaAccount
+          file: ./abis/InstaAccount.json
+      eventHandlers:
+        - event: LogNewMaster(indexed address)
+          handler: handleNewMaster
+        - event: LogUpdateMaster(indexed address)
+          handler: handleUpdateMaster
+        - event: LogNewCheck(indexed uint256,indexed address)
+          handler: handleNewCheck
+        - event: LogNewAccount(indexed address,indexed address,indexed address)
+          handler: handleNewAccount
+        - event: LogAccountCreated(address,indexed address,indexed address,indexed address)
+          handler: handleAccountCreated
+      callHandlers:
+        - function: setBasics(address,address,address,address)
+          handler: handleSetBasics
+      file: ./src/mappings/InstaIndex.ts
+
+templates:
+  - kind: ethereum/contract
+    name: InstaImplementations
+    network: mainnet
+    source:
+      abi: InstaImplementations
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaImplementations
+          file: ./abis/InstaImplementations.json
+      eventHandlers:
+        - event: LogSetDefaultImplementation(indexed address,indexed address)
+          handler: handlerSetDefaultImplementation
+        - event: LogAddImplementation(indexed address,bytes4[])
+          handler: handlerAddImplementation
+        - event: LogRemoveImplementation(indexed address,bytes4[])
+          handler: handleRemoveImplementation
+      file: ./src/mappings/InstaImplementations.ts
+
+  - kind: ethereum/contract
+    name: InstaAccount
+    network: mainnet
+    source:
+      abi: InstaAccount
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaAccount
+          file: ./abis/InstaAccount.json
+      eventHandlers:
+        - event: LogEnableUser(indexed address)
+          handler: handleEnableUser
+        - event: LogDisableUser(indexed address)
+          handler: handleDisableUser
+        - event: LogCast(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
+          handler: handleCast
+      file: ./src/mappings/InstaAccount.ts
+
+  - kind: ethereum/contract
+    name: InstaConnectors
+    network: mainnet
+    source:
+      abi: InstaConnectors
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaConnectors
+          file: ./abis/InstaConnectors.json
+      eventHandlers:
+        - event: LogController(indexed address,indexed bool)
+          handler: handleController
+        - event: LogConnectorAdded(indexed bytes32,string,indexed address)
+          handler: handleConnectorAdded
+        - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
+          handler: handleConnectorUpdated
+        - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
+          handler: handlerConnectorRemoved
+      file: ./src/mappings/InstaConnectors.ts

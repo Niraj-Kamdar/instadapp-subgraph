@@ -1,0 +1,15 @@
+[
+  {
+    "inputs": [],
+    "name": "implementations",
+    "outputs": [
+      {
+        "internalType": "contract AccountImplementations",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
