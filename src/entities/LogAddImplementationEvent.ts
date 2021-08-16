@@ -1,4 +1,4 @@
-import { LogAddImplementation } from "./../../generated/templates/InstaImplementations/InstaImplementations";
+import { LogAddImplementation } from "./../../generated/templates/InstaImplementation/InstaImplementation";
 import { LogAddImplementationEvent } from "../../generated/schema";
 
 export function createLogAddImplementation(event: LogAddImplementation): void {

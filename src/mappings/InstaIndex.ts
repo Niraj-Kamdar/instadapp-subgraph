@@ -1,4 +1,3 @@
-import { AccountOwnerList } from "./../../generated/schema";
 import { ZERO_ADDRESS } from "./../config";
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {

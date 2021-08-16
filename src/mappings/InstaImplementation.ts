@@ -2,7 +2,7 @@ import {
   createImplementation,
   deleteImplementation
 } from "../entities/Implementation";
-import { updateDefaultImplementation } from "../entities/InstaImplementations";
+import { updateDefaultImplementation } from "../entities/InstaImplementation";
 import { createLogAddImplementation } from "../entities/LogAddImplementationEvent";
 import { createLogRemoveImplementation } from "../entities/LogRemoveImplementationEvent";
 import { createLogSetDefaultImplementation } from "../entities/LogSetDefaultImplementationEvent";
@@ -10,7 +10,7 @@ import {
   LogSetDefaultImplementation,
   LogAddImplementation,
   LogRemoveImplementation
-} from "./../../generated/templates/InstaImplementations/InstaImplementations";
+} from "../../generated/templates/InstaImplementation/InstaImplementation";
 
 export function handleSetDefaultImplementation(
   event: LogSetDefaultImplementation

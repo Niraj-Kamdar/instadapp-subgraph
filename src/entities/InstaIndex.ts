@@ -9,7 +9,7 @@ export function createInstaIndex(
   masterAddress: Address,
   instaListAddress: Address,
   instaAccountAddress: Address,
-  instaConnectorsAddress: Address,
+  instaConnectorAddress: Address,
   createdAt: BigInt
 ): void {
   let dbInstaIndex = new InstaIndex(instaIndexAddress.toHex());
@@ -24,7 +24,7 @@ export function createInstaIndex(
     latestVersion,
     instaIndexAddress,
     instaAccountAddress,
-    instaConnectorsAddress,
+    instaConnectorAddress,
     Address.fromString(ZERO_ADDRESS),
     createdAt
   );

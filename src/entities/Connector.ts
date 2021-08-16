@@ -4,7 +4,7 @@ import {
   decreaseActiveConnectors,
   increaseActiveConnectors,
   increaseTotalConnectors
-} from "./InstaConnectors";
+} from "./InstaConnector";
 
 export function ensureConnectorList(
   connectorName: string,
@@ -40,7 +40,7 @@ export function upsertConnector(
   connectorName: string,
   connectorNameHash: Bytes,
   connectorAddress: Address,
-  instaConnectorsAddress: Address,
+  instaConnectorAddress: Address,
   createdAt: BigInt
 ): Array<string> {
   let connectorIds = new Array<string>();
@@ -52,7 +52,7 @@ export function upsertConnector(
   let connectorId: string = connectorName + "-" + version.toString();
   let dbConnector = new Connector(connectorId);
   dbConnector.address = connectorAddress;
-  dbConnector.instaConnectors = instaConnectorsAddress.toHex();
+  dbConnector.instaConnector = instaConnectorAddress.toHex();
   dbConnector.version = version;
   dbConnector.createdAt = createdAt;
   dbConnector.connectorList = connectorName;
@@ -67,8 +67,8 @@ export function upsertConnector(
     dbOldConnector.save();
     connectorIds.push(oldConnectorId);
   } else {
-    increaseActiveConnectors(instaConnectorsAddress);
-    increaseTotalConnectors(instaConnectorsAddress);
+    increaseActiveConnectors(instaConnectorAddress);
+    increaseTotalConnectors(instaConnectorAddress);
   }
 
   return connectorIds;
@@ -77,7 +77,7 @@ export function upsertConnector(
 export function deleteConnector(
   connectorName: string,
   connectorNameHash: Bytes,
-  instaConnectorsAddress: Address,
+  instaConnectorAddress: Address,
   deletedAt: BigInt
 ): string {
   let dbConnectorList: ConnectorList = ensureConnectorList(
@@ -90,7 +90,7 @@ export function deleteConnector(
   dbConnector.deletedAt = deletedAt;
   dbConnector.save();
 
-  decreaseActiveConnectors(instaConnectorsAddress);
+  decreaseActiveConnectors(instaConnectorAddress);
 
   return connectorId;
 }

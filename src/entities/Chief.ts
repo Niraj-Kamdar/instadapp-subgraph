@@ -5,7 +5,7 @@ import {
   decreaseActiveChiefs,
   increaseActiveChiefs,
   increaseTotalChiefs
-} from "./InstaConnectors";
+} from "./InstaConnector";
 
 export function ensureChiefList(cheifAddress: Address): ChiefList {
   let chiefListId = cheifAddress.toHex();
@@ -29,7 +29,7 @@ export function increaseChiefLatestVersion(chiefAddress: Address): BigInt {
 
 export function upsertChief(
   chiefAddress: Address,
-  instaConnectorsAddress: Address,
+  instaConnectorAddress: Address,
   isChief: boolean,
   createdAt: BigInt
 ): string {
@@ -40,7 +40,7 @@ export function upsertChief(
   let dbChief = new Chief(chiefId);
   dbChief.address = chiefAddress;
   dbChief.isActive = isChief;
-  dbChief.instaConnectors = instaConnectorsAddress.toHex();
+  dbChief.instaConnector = instaConnectorAddress.toHex();
   dbChief.version = version;
   dbChief.createdAt = createdAt;
   dbChief.chiefList = chiefListId;
@@ -53,13 +53,13 @@ export function upsertChief(
     dbOldChief.deletedAt = createdAt;
     dbOldChief.save();
   } else {
-    increaseTotalChiefs(instaConnectorsAddress);
+    increaseTotalChiefs(instaConnectorAddress);
   }
 
   if (isChief) {
-    increaseActiveChiefs(instaConnectorsAddress);
+    increaseActiveChiefs(instaConnectorAddress);
   } else {
-    decreaseActiveChiefs(instaConnectorsAddress);
+    decreaseActiveChiefs(instaConnectorAddress);
   }
 
   return chiefId;

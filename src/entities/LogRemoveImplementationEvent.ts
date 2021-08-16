@@ -1,4 +1,4 @@
-import { LogRemoveImplementation } from "./../../generated/templates/InstaImplementations/InstaImplementations";
+import { LogRemoveImplementation } from "./../../generated/templates/InstaImplementation/InstaImplementation";
 import { LogRemoveImplementationEvent } from "../../generated/schema";
 
 export function createLogRemoveImplementation(

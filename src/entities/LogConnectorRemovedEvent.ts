@@ -1,5 +1,5 @@
 import { LogConnectorRemovedEvent } from "./../../generated/schema";
-import { LogConnectorRemoved } from "./../../generated/templates/InstaConnectors/InstaConnectors";
+import { LogConnectorRemoved } from "./../../generated/templates/InstaConnector/InstaConnector";
 
 export function createLogConnectorRemovedEvent(
   event: LogConnectorRemoved,

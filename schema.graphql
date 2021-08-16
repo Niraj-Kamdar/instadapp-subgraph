@@ -42,7 +42,7 @@ type InstaIndex implements IContract @entity {
 type Version implements IContract @entity {
   id: ID! # version number
   instaAccount: InstaAccount!
-  instaConnectors: InstaConnectors!
+  instaConnector: InstaConnector!
   check: Bytes!  # Address
   instaIndex:  InstaIndex!
   createdAt: BigInt!
@@ -89,15 +89,15 @@ type AccountOwner implements IEditable @entity {
 type InstaAccount implements IContract @entity {
   id: ID!
   version: Version!
-  instaImplementations: InstaImplementations  # Only available for V2
+  instaImplementation: InstaImplementation  # Only available for V2
   createdAt: BigInt!
 }
 
-type InstaImplementations implements IContract @entity {
+type InstaImplementation implements IContract @entity {
   id: ID!
   instaAccount: InstaAccount!
   defaultImplementation: Bytes  # Address
-  implementations: [Implementation!] @derivedFrom(field: "instaImplementations")
+  implementations: [Implementation!] @derivedFrom(field: "instaImplementation")
   createdAt: BigInt!
 }
 
@@ -105,7 +105,7 @@ type Implementation @entity {
   id: ID!
   signatures: [Signature!] @derivedFrom(field: "implementation")
   totalSignatures: Int!
-  instaImplementations: InstaImplementations
+  instaImplementation: InstaImplementation
   createdAt: BigInt!
   deletedAt: BigInt
 }
@@ -116,10 +116,10 @@ type Signature @entity {
   implementation: Implementation!
 }
 
-type InstaConnectors implements IContract @entity {
+type InstaConnector implements IContract @entity {
   id: ID!
-  chiefs: [Chief!] @derivedFrom(field: "instaConnectors")
-  connectors: [Connector!] @derivedFrom(field: "instaConnectors")
+  chiefs: [Chief!] @derivedFrom(field: "instaConnector")
+  connectors: [Connector!] @derivedFrom(field: "instaConnector")
   totalChiefs: BigInt!
   totalActiveChiefs: BigInt!
   totalConnectors: BigInt!
@@ -138,7 +138,7 @@ type Chief implements IEditable @entity {
   id: ID!
   address: Bytes!  # Address
   isActive: Boolean!
-  instaConnectors: InstaConnectors!
+  instaConnector: InstaConnector!
   chiefList: ChiefList!
   version: BigInt!
   createdAt: BigInt!
@@ -156,7 +156,7 @@ type ConnectorList implements IEditableParent @entity {
 type Connector implements IEditable @entity {
   id: ID!  
   address: Bytes!  # Address
-  instaConnectors: InstaConnectors!
+  instaConnector: InstaConnector!
   connectorList: ConnectorList!
   version: BigInt!
   createdAt: BigInt!

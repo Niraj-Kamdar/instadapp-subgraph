@@ -9,7 +9,7 @@ import {
   LogConnectorAdded,
   LogConnectorRemoved,
   LogConnectorUpdated
-} from "./../../generated/templates/InstaConnectors/InstaConnectors";
+} from "../../generated/templates/InstaConnector/InstaConnector";
 
 export function handleController(event: LogController): void {
   let cheifId: string = upsertChief(

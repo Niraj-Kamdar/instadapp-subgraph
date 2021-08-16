@@ -4,7 +4,7 @@ import { createSignature } from "./Signature";
 
 export function createImplementation(
   address: Address,
-  instaImplementationsAddress: Address,
+  instaImplementationAddress: Address,
   signatures: Array<Bytes>,
   createdAt: BigInt
 ): void {
@@ -14,7 +14,7 @@ export function createImplementation(
 
   let dbImplementation = new Implementation(address.toHex());
   dbImplementation.totalSignatures = signatures.length;
-  dbImplementation.instaImplementations = instaImplementationsAddress.toHex();
+  dbImplementation.instaImplementation = instaImplementationAddress.toHex();
   dbImplementation.createdAt = createdAt;
   dbImplementation.save();
 }

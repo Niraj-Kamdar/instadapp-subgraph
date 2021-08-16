@@ -44,18 +44,18 @@ dataSources:
 
 templates:
   - kind: ethereum/contract
-    name: InstaImplementations
+    name: InstaImplementation
     network: mainnet
     source:
-      abi: InstaImplementations
+      abi: InstaImplementation
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities: []
       abis:
-        - name: InstaImplementations
-          file: ./abis/InstaImplementations.json
+        - name: InstaImplementation
+          file: ./abis/InstaImplementation.json
       eventHandlers:
         - event: LogSetDefaultImplementation(indexed address,indexed address)
           handler: handleSetDefaultImplementation
@@ -63,7 +63,7 @@ templates:
           handler: handleAddImplementation
         - event: LogRemoveImplementation(indexed address,bytes4[])
           handler: handleRemoveImplementation
-      file: ./src/mappings/InstaImplementations.ts
+      file: ./src/mappings/InstaImplementation.ts
 
   - kind: ethereum/contract
     name: InstaAccountV1
@@ -110,18 +110,18 @@ templates:
       file: ./src/mappings/InstaAccountV2.ts
 
   - kind: ethereum/contract
-    name: InstaConnectors
+    name: InstaConnector
     network: mainnet
     source:
-      abi: InstaConnectors
+      abi: InstaConnector
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities: []
       abis:
-        - name: InstaConnectors
-          file: ./abis/InstaConnectors.json
+        - name: InstaConnector
+          file: ./abis/InstaConnector.json
       eventHandlers:
         - event: LogController(indexed address,indexed bool)
           handler: handleController
@@ -131,4 +131,4 @@ templates:
           handler: handleConnectorUpdated
         - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
           handler: handlerConnectorRemoved
-      file: ./src/mappings/InstaConnectors.ts
+      file: ./src/mappings/InstaConnector.ts

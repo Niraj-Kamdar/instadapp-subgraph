@@ -1,5 +1,5 @@
 import { LogControllerEvent } from "./../../generated/schema";
-import { LogController } from "./../../generated/templates/InstaConnectors/InstaConnectors";
+import { LogController } from "./../../generated/templates/InstaConnector/InstaConnector";
 
 export function createLogControllerEvent(
   event: LogController,

@@ -1,7 +1,7 @@
 import { Version } from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { createInstaAccount } from "./InstaAccount";
-import { createInstaConnectors } from "./InstaConnectors";
+import { createInstaConnector } from "./InstaConnector";
 
 export function updateCheckAddress(
   version: string,
@@ -20,16 +20,16 @@ export function createVersion(
   version: string,
   instaIndexAddress: Address,
   instaAccountAddress: Address,
-  instaConnectorsAddress: Address,
+  instaConnectorAddress: Address,
   checkAddress: Address,
   createdAt: BigInt
 ): void {
   createInstaAccount(instaAccountAddress, version, createdAt);
-  createInstaConnectors(instaConnectorsAddress, version, createdAt);
+  createInstaConnector(instaConnectorAddress, version, createdAt);
 
   let dbVersion = new Version(version);
   dbVersion.instaAccount = instaAccountAddress.toHex();
-  dbVersion.instaConnectors = instaConnectorsAddress.toHex();
+  dbVersion.instaConnector = instaConnectorAddress.toHex();
   dbVersion.check = checkAddress;
   dbVersion.instaIndex = instaIndexAddress.toHex();
   dbVersion.createdAt = createdAt;
