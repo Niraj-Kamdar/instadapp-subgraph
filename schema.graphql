@@ -146,16 +146,16 @@ type Chief implements IEditable @entity {
 }
 
 type ConnectorList implements IEditableParent @entity {
-  id: ID!
+  id: ID!  # same as nameHash
+  name: String!
+  nameHash: Bytes!
   connectors: [Connector!] @derivedFrom(field: "connectorList")
   latestVersion: BigInt!
 }
 
 type Connector implements IEditable @entity {
-  id: ID!  # same as nameHash
+  id: ID!  
   address: Bytes!  # Address
-  name: String!
-  nameHash: Bytes!
   instaConnectors: InstaConnectors!
   connectorList: ConnectorList!
   version: BigInt!
