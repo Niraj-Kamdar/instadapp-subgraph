@@ -236,7 +236,7 @@ type LogCastEvent implements ILog @entity {
   sender: Bytes!  # Address
   value: BigInt!
   spells: [LogSpell!] @derivedFrom(field: "cast")
-  totalSpells: BigInt!
+  totalSpells: BigInt
   timestamp: BigInt!
 }
 

@@ -1,6 +1,9 @@
 specVersion: 0.0.2
 description: Instadapp Subgraph on Mainnet
 # repository: https://github.com/graphprotocol/example-subgraph
+# graft:
+#   base: "QmXpfqi7JhAruFxPzw4G9jx3dW7u2hk2xZk2Z16twc6bnp" # Subgraph ID of base subgraph
+#   block: 12061942 # Block number
 schema:
   file: ./schema.graphql
 dataSources:
@@ -55,26 +58,48 @@ templates:
           file: ./abis/InstaImplementations.json
       eventHandlers:
         - event: LogSetDefaultImplementation(indexed address,indexed address)
-          handler: handlerSetDefaultImplementation
+          handler: handleSetDefaultImplementation
         - event: LogAddImplementation(indexed address,bytes4[])
-          handler: handlerAddImplementation
+          handler: handleAddImplementation
         - event: LogRemoveImplementation(indexed address,bytes4[])
           handler: handleRemoveImplementation
       file: ./src/mappings/InstaImplementations.ts
 
   - kind: ethereum/contract
-    name: InstaAccount
+    name: InstaAccountV1
     network: mainnet
     source:
-      abi: InstaAccount
+      abi: InstaAccountV1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities: []
       abis:
-        - name: InstaAccount
-          file: ./abis/InstaAccount.json
+        - name: InstaAccountV1
+          file: ./abis/InstaAccountV1.json
+      eventHandlers:
+        - event: LogEnable(indexed address)
+          handler: handleEnable
+        - event: LogDisable(indexed address)
+          handler: handleDisable
+        - event: LogCast(indexed address,indexed address,uint256)
+          handler: handleCast
+      file: ./src/mappings/InstaAccountV1.ts
+
+  - kind: ethereum/contract
+    name: InstaAccountV2
+    network: mainnet
+    source:
+      abi: InstaAccountV2
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaAccountV2
+          file: ./abis/InstaAccountV2.json
       eventHandlers:
         - event: LogEnableUser(indexed address)
           handler: handleEnableUser
@@ -82,7 +107,7 @@ templates:
           handler: handleDisableUser
         - event: LogCast(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
           handler: handleCast
-      file: ./src/mappings/InstaAccount.ts
+      file: ./src/mappings/InstaAccountV2.ts
 
   - kind: ethereum/contract
     name: InstaConnectors

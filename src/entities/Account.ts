@@ -1,5 +1,6 @@
 import { InstaAccount as InstaAccountContract } from "./../../generated/InstaIndex/InstaAccount";
-import { InstaAccount as InstaAccountMapping } from "../../generated/templates";
+import { InstaAccountV1 as InstaAccountV1Mapping } from "../../generated/templates";
+import { InstaAccountV2 as InstaAccountV2Mapping } from "../../generated/templates";
 import {
   Account,
   Owner,
@@ -30,7 +31,11 @@ export function createAccount(
     return;
   }
 
-  InstaAccountMapping.create(address);
+  if (accountVersion == BigInt.fromString("1")) {
+    InstaAccountV1Mapping.create(address);
+  } else {
+    InstaAccountV2Mapping.create(address);
+  }
 
   let dbAccount = new Account(address.toHex());
   dbAccount.accountNumber = accountNumber;

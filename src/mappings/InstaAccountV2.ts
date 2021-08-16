@@ -2,8 +2,9 @@ import {
   LogCast,
   LogDisableUser,
   LogEnableUser
-} from "./../../generated/templates/InstaAccount/InstaAccount";
+} from "../../generated/templates/InstaAccountV2/InstaAccountV2";
 import { deleteAccountOwner, upsertAccountOwner } from "../entities/Account";
+import { createLogCastV2Event } from "../entities/LogCastEvent";
 import { createLogDisableUser } from "../entities/LogDisableUserEvent";
 import { createLogEnableUser } from "../entities/LogEnableUserEvent";
 
@@ -25,4 +26,6 @@ export function handleDisableUser(event: LogDisableUser): void {
   createLogDisableUser(event, accountOwnerId);
 }
 
-export function handleCast(event: LogCast): void {}
+export function handleCast(event: LogCast): void {
+  createLogCastV2Event(event);
+}
