@@ -9,6 +9,7 @@ export function createLogCastV2Event(event: LogCastV2): void {
     event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let totalSpells: i32 = event.params.targets.length;
   let dbEvent = new LogCastEvent(eventId);
+  dbEvent.account = event.address.toHex();
   dbEvent.origin = event.params.origin;
   dbEvent.sender = event.params.sender;
   dbEvent.value = event.params.value;
@@ -37,6 +38,7 @@ export function createLogCastV1Event(event: LogCastV1): void {
   let eventId: string =
     event.transaction.hash.toHex() + "-" + event.logIndex.toString();
   let dbEvent = new LogCastEvent(eventId);
+  dbEvent.account = event.address.toHex();
   dbEvent.origin = event.params.origin;
   dbEvent.sender = event.params.sender;
   dbEvent.value = event.params.value;

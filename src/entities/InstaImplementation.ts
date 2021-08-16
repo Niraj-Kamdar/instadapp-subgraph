@@ -18,9 +18,7 @@ export function updateDefaultImplementation(
 ): void {
   let dbInstaImplementation = InstaImplementation.load(address.toHex());
   if (!dbInstaImplementation) {
-    log.critical("InstaImplementation doesn't exist at {}!", [
-      address.toHex()
-    ]);
+    log.critical("InstaImplementation doesn't exist at {}!", [address.toHex()]);
     return;
   }
   dbInstaImplementation.defaultImplementation = defaultImplementationAddress;
