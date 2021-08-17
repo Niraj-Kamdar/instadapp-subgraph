@@ -63,3 +63,4 @@ typings/
 # Ignore graph build and generated
 build/
 generated/
+subgraph.yaml

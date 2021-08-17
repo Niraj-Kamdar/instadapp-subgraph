@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: Instadapp Subgraph on Mainnet
+description: Instadapp Subgraph on {{network}}
 # repository: https://github.com/graphprotocol/example-subgraph
 # graft:
 #   base: "QmXpfqi7JhAruFxPzw4G9jx3dW7u2hk2xZk2Z16twc6bnp" # Subgraph ID of base subgraph
@@ -9,10 +9,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: InstaIndex
-    network: mainnet
+    network: {{network}}
     source:
-      address: '0x2971adfa57b20e5a416ae5a708a8655a9c74f723'
-      startBlock: 9747241
+      address: '{{InstaIndex_contract}}'
+      startBlock: {{InstaIndex_startBlock}}
       abi: InstaIndex
     mapping:
       kind: ethereum/events
@@ -26,8 +26,6 @@ dataSources:
           file: ./abis/Proxy.json
         - name: InstaAccount
           file: ./abis/InstaAccount.json
-        - name: Implementation
-          file: ./abis/Implementation.json
       eventHandlers:
         - event: LogNewMaster(indexed address)
           handler: handleNewMaster
@@ -44,12 +42,11 @@ dataSources:
           handler: handleSetBasics
       file: ./src/mappings/InstaIndex.ts
 
+templates:
   - kind: ethereum/contract
     name: InstaImplementation
-    network: mainnet
+    network: {{network}}
     source:
-      address: '0xCBA828153d3a85b30B5b912e1f2daCac5816aE9D'
-      startBlock: 12061939
       abi: InstaImplementation
     mapping:
       kind: ethereum/events
@@ -59,6 +56,8 @@ dataSources:
       abis:
         - name: InstaImplementation
           file: ./abis/InstaImplementation.json
+        - name: Implementation
+          file: ./abis/Implementation.json
       eventHandlers:
         - event: LogSetDefaultImplementation(indexed address,indexed address)
           handler: handleSetDefaultImplementation
@@ -69,65 +68,8 @@ dataSources:
       file: ./src/mappings/InstaImplementation.ts
 
   - kind: ethereum/contract
-    name: InstaConnectorV1
-    network: mainnet
-    source:
-      address: '0xD6A602C01a023B98Ecfb29Df02FBA380d3B21E0c'
-      abi: InstaConnectorV1
-      startBlock: 9747287
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities: []
-      abis:
-        - name: InstaConnectorV1
-          file: ./abis/InstaConnectorV1.json
-        - name: Connector
-          file: ./abis/Connector.json
-      eventHandlers:
-        - event: LogAddController(indexed address)
-          handler: handleAddController
-        - event: LogRemoveController(indexed address)
-          handler: handleRemoveController
-        - event: LogEnable(indexed address)
-          handler: handleEnableConnector
-        - event: LogDisable(indexed address)
-          handler: handleDisableConnector
-        - event: LogEnableStatic(indexed address)
-          handler: handleEnableStaticConnector
-      file: ./src/mappings/InstaConnectorV1.ts
-
-  - kind: ethereum/contract
-    name: InstaConnectorV2
-    network: mainnet
-    source:
-      address: '0x97b0B3A8bDeFE8cB9563a3c610019Ad10DB8aD11'
-      abi: InstaConnectorV2
-      startBlock: 12434479
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities: []
-      abis:
-        - name: InstaConnectorV2
-          file: ./abis/InstaConnectorV2.json
-      eventHandlers:
-        - event: LogController(indexed address,indexed bool)
-          handler: handleController
-        - event: LogConnectorAdded(indexed bytes32,string,indexed address)
-          handler: handleConnectorAdded
-        - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
-          handler: handleConnectorUpdated
-        - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
-          handler: handlerConnectorRemoved
-      file: ./src/mappings/InstaConnectorV2.ts
-
-templates:
-  - kind: ethereum/contract
     name: InstaAccountV1
-    network: mainnet
+    network: {{network}}
     source:
       abi: InstaAccountV1
     mapping:
@@ -149,7 +91,7 @@ templates:
 
   - kind: ethereum/contract
     name: InstaAccountV2
-    network: mainnet
+    network: {{network}}
     source:
       abi: InstaAccountV2
     mapping:
@@ -168,3 +110,27 @@ templates:
         - event: LogCast(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
           handler: handleCast
       file: ./src/mappings/InstaAccountV2.ts
+
+  - kind: ethereum/contract
+    name: InstaConnector
+    network: {{network}}
+    source:
+      abi: InstaConnector
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaConnector
+          file: ./abis/InstaConnector.json
+      eventHandlers:
+        - event: LogController(indexed address,indexed bool)
+          handler: handleController
+        - event: LogConnectorAdded(indexed bytes32,string,indexed address)
+          handler: handleConnectorAdded
+        - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
+          handler: handleConnectorUpdated
+        - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
+          handler: handlerConnectorRemoved
+      file: ./src/mappings/InstaConnector.ts
