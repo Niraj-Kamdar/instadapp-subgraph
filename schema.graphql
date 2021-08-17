@@ -159,6 +159,7 @@ type Connector implements IEditable @entity {
   address: Bytes!  # Address
   instaConnector: InstaConnector!
   connectorList: ConnectorList!
+  isStatic: Boolean
   version: BigInt!
   createdAt: BigInt!
   deletedAt: BigInt

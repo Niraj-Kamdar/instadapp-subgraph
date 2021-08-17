@@ -1,5 +1,6 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { InstaConnector as InstaConnectorMapping } from "../../generated/templates";
+import { InstaConnectorV2 as InstaConnectorV2Mapping } from "../../generated/templates";
+import { InstaConnectorV1 as InstaConnectorV1Mapping } from "../../generated/templates";
 import { InstaConnector } from "../../generated/schema";
 
 export function createInstaConnector(
@@ -7,7 +8,11 @@ export function createInstaConnector(
   version: string,
   createdAt: BigInt
 ): void {
-  InstaConnectorMapping.create(address);
+  if (version == "1") {
+    InstaConnectorV1Mapping.create(address);
+  } else {
+    InstaConnectorV2Mapping.create(address);
+  }
 
   let dbInstaConnector = new InstaConnector(address.toHex());
   dbInstaConnector.totalChiefs = BigInt.fromString("0");

@@ -1,8 +1,8 @@
+import { ethereum } from "@graphprotocol/graph-ts";
 import { LogConnectorUpdatedEvent } from "./../../generated/schema";
-import { LogConnectorUpdated } from "./../../generated/templates/InstaConnector/InstaConnector";
 
 export function createLogConnectorUpdatedEvent(
-  event: LogConnectorUpdated,
+  event: ethereum.Event,
   newConnectorId: string,
   oldConnectorId: string
 ): void {

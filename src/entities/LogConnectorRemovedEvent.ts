@@ -1,8 +1,8 @@
+import { ethereum } from "@graphprotocol/graph-ts";
 import { LogConnectorRemovedEvent } from "./../../generated/schema";
-import { LogConnectorRemoved } from "./../../generated/templates/InstaConnector/InstaConnector";
 
 export function createLogConnectorRemovedEvent(
-  event: LogConnectorRemoved,
+  event: ethereum.Event,
   connectorId: string
 ): void {
   let eventId: string =

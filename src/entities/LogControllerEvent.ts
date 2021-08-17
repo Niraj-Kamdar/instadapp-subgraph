@@ -1,8 +1,8 @@
+import { ethereum } from "@graphprotocol/graph-ts";
 import { LogControllerEvent } from "./../../generated/schema";
-import { LogController } from "./../../generated/templates/InstaConnector/InstaConnector";
 
 export function createLogControllerEvent(
-  event: LogController,
+  event: ethereum.Event,
   chiefId: string
 ): void {
   let eventId: string =
