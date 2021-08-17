@@ -84,7 +84,6 @@ export function handleAccountCreated(event: LogAccountCreated): void {
         instaListAddress,
         event.block.timestamp
       );
-      ensureOwner(event.params.owner);
       upsertAccountOwner(
         event.params.account,
         event.params.owner,

@@ -60,6 +60,7 @@ export function ensureAccountOwnerList(
   let accountOwnerListId = accountAddress.toHex() + "-" + ownerAddress.toHex();
   let dbAccountOwnerList = AccountOwnerList.load(accountOwnerListId);
   if (!dbAccountOwnerList) {
+    ensureOwner(ownerAddress);
     dbAccountOwnerList = new AccountOwnerList(accountOwnerListId);
     dbAccountOwnerList.account = accountAddress.toHex();
     dbAccountOwnerList.owner = ownerAddress.toHex();
