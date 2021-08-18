@@ -5,7 +5,7 @@ import {
   crypto,
   ByteArray
 } from "@graphprotocol/graph-ts";
-import { Connector as ConnectorContract } from "../../generated/templates/InstaConnectorV1/Connector";
+import { Connector as ConnectorContract } from "../../generated/InstaConnectorV1/Connector";
 import { Connector, ConnectorList } from "../../generated/schema";
 import {
   decreaseActiveConnectors,

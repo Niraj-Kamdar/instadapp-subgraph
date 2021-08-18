@@ -1,4 +1,4 @@
-import { LogSetDefaultImplementation } from "./../../generated/templates/InstaImplementation/InstaImplementation";
+import { LogSetDefaultImplementation } from "./../../generated/InstaImplementation/InstaImplementation";
 import { LogSetDefaultImplementationEvent } from "../../generated/schema";
 
 export function createLogSetDefaultImplementation(

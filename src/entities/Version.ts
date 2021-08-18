@@ -24,9 +24,6 @@ export function createVersion(
   checkAddress: Address,
   createdAt: BigInt
 ): void {
-  createInstaAccount(instaAccountAddress, version, createdAt);
-  createInstaConnectorProxy(instaConnectorAddress, version, createdAt);
-
   let dbVersion = new Version(version);
   dbVersion.instaAccount = instaAccountAddress.toHex();
   dbVersion.instaConnectorProxy = instaConnectorAddress.toHex();
@@ -34,4 +31,7 @@ export function createVersion(
   dbVersion.instaIndex = instaIndexAddress.toHex();
   dbVersion.createdAt = createdAt;
   dbVersion.save();
+
+  createInstaAccount(instaAccountAddress, version, createdAt);
+  createInstaConnectorProxy(instaConnectorAddress, version, createdAt);
 }

@@ -26,6 +26,8 @@ dataSources:
           file: ./abis/Proxy.json
         - name: InstaAccount
           file: ./abis/InstaAccount.json
+        - name: Implementation
+          file: ./abis/Implementation.json
       eventHandlers:
         - event: LogNewMaster(indexed address)
           handler: handleNewMaster
@@ -42,11 +44,12 @@ dataSources:
           handler: handleSetBasics
       file: ./src/mappings/InstaIndex.ts
 
-templates:
   - kind: ethereum/contract
     name: InstaImplementation
     network: mainnet
     source:
+      address: '0xCBA828153d3a85b30B5b912e1f2daCac5816aE9D'
+      startBlock: 12061939
       abi: InstaImplementation
     mapping:
       kind: ethereum/events
@@ -56,8 +59,6 @@ templates:
       abis:
         - name: InstaImplementation
           file: ./abis/InstaImplementation.json
-        - name: Implementation
-          file: ./abis/Implementation.json
       eventHandlers:
         - event: LogSetDefaultImplementation(indexed address,indexed address)
           handler: handleSetDefaultImplementation
@@ -67,6 +68,63 @@ templates:
           handler: handleRemoveImplementation
       file: ./src/mappings/InstaImplementation.ts
 
+  - kind: ethereum/contract
+    name: InstaConnectorV1
+    network: mainnet
+    source:
+      address: '0xD6A602C01a023B98Ecfb29Df02FBA380d3B21E0c'
+      abi: InstaConnectorV1
+      startBlock: 9747287
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaConnectorV1
+          file: ./abis/InstaConnectorV1.json
+        - name: Connector
+          file: ./abis/Connector.json
+      eventHandlers:
+        - event: LogAddController(indexed address)
+          handler: handleAddController
+        - event: LogRemoveController(indexed address)
+          handler: handleRemoveController
+        - event: LogEnable(indexed address)
+          handler: handleEnableConnector
+        - event: LogDisable(indexed address)
+          handler: handleDisableConnector
+        - event: LogEnableStatic(indexed address)
+          handler: handleEnableStaticConnector
+      file: ./src/mappings/InstaConnectorV1.ts
+
+  - kind: ethereum/contract
+    name: InstaConnectorV2
+    network: mainnet
+    source:
+      address: '0x97b0B3A8bDeFE8cB9563a3c610019Ad10DB8aD11'
+      abi: InstaConnectorV2
+      startBlock: 12434479
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: InstaConnectorV2
+          file: ./abis/InstaConnectorV2.json
+      eventHandlers:
+        - event: LogController(indexed address,indexed bool)
+          handler: handleController
+        - event: LogConnectorAdded(indexed bytes32,string,indexed address)
+          handler: handleConnectorAdded
+        - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
+          handler: handleConnectorUpdated
+        - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
+          handler: handlerConnectorRemoved
+      file: ./src/mappings/InstaConnectorV2.ts
+
+templates:
   - kind: ethereum/contract
     name: InstaAccountV1
     network: mainnet
@@ -110,55 +168,3 @@ templates:
         - event: LogCast(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
           handler: handleCast
       file: ./src/mappings/InstaAccountV2.ts
-
-  - kind: ethereum/contract
-    name: InstaConnectorV1
-    network: mainnet
-    source:
-      abi: InstaConnectorV1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities: []
-      abis:
-        - name: InstaConnectorV1
-          file: ./abis/InstaConnectorV1.json
-        - name: Connector
-          file: ./abis/Connector.json
-      eventHandlers:
-        - event: LogAddController(indexed address)
-          handler: handleAddController
-        - event: LogRemoveController(indexed address)
-          handler: handleRemoveController
-        - event: LogEnable(indexed address)
-          handler: handleEnableConnector
-        - event: LogDisable(indexed address)
-          handler: handleDisableConnector
-        - event: LogEnableStatic(indexed address)
-          handler: handleEnableStaticConnector
-      file: ./src/mappings/InstaConnectorV1.ts
-
-  - kind: ethereum/contract
-    name: InstaConnectorV2
-    network: mainnet
-    source:
-      abi: InstaConnectorV2
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities: []
-      abis:
-        - name: InstaConnectorV2
-          file: ./abis/InstaConnectorV2.json
-      eventHandlers:
-        - event: LogController(indexed address,indexed bool)
-          handler: handleController
-        - event: LogConnectorAdded(indexed bytes32,string,indexed address)
-          handler: handleConnectorAdded
-        - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
-          handler: handleConnectorUpdated
-        - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
-          handler: handlerConnectorRemoved
-      file: ./src/mappings/InstaConnectorV2.ts

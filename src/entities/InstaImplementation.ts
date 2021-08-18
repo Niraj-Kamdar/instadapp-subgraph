@@ -1,14 +1,22 @@
+import { ZERO_ADDRESS } from "./../config";
 import { InstaImplementation } from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-export function createInstaImplementation(
+let zeroAddress: Address = Address.fromString(ZERO_ADDRESS);
+
+export function ensureInstaImplementation(
   address: Address,
-  accountAddress: Address,
-  createdAt: BigInt
+  createdAt: BigInt,
+  accountAddress: Address = zeroAddress
 ): void {
-  let dbInstaImplementation = new InstaImplementation(address.toHex());
-  dbInstaImplementation.instaAccount = accountAddress.toHex();
-  dbInstaImplementation.createdAt = createdAt;
+  let dbInstaImplementation = InstaImplementation.load(address.toHex());
+  if (!dbInstaImplementation) {
+    dbInstaImplementation = new InstaImplementation(address.toHex());
+    dbInstaImplementation.createdAt = createdAt;
+  }
+  if (accountAddress != zeroAddress) {
+    dbInstaImplementation.instaAccount = accountAddress.toHex();
+  }
   dbInstaImplementation.save();
 }
 

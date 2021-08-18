@@ -1,8 +1,15 @@
-import { InstaConnectorProxy } from "./../../generated/schema";
+import { Implementation as ImplementationContract } from "../../generated/InstaIndex/Implementation";
+import {
+  InstaAccount,
+  InstaConnectorProxy,
+  InstaImplementation,
+  Version
+} from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { InstaConnectorV2 as InstaConnectorV2Mapping } from "../../generated/templates";
-import { InstaConnectorV1 as InstaConnectorV1Mapping } from "../../generated/templates";
 import { InstaConnector } from "../../generated/schema";
+import { ZERO_ADDRESS } from "../config";
+
+let zeroAddress: Address = Address.fromString(ZERO_ADDRESS);
 
 export function createInstaConnectorProxy(
   address: Address,
@@ -11,38 +18,54 @@ export function createInstaConnectorProxy(
 ): void {
   let dbInstaConnectorProxy = new InstaConnectorProxy(address.toHex());
   if (version == "1") {
-    InstaConnectorV1Mapping.create(address);
-    createInstaConnector(address, address, version, createdAt);
+    ensureInstaConnector(address, createdAt, version, address);
     dbInstaConnectorProxy.implementation = address.toHex();
+  } else {
+    let dbVersion = Version.load(version);
+    let dbInstaAccount = InstaAccount.load(dbVersion.instaAccount);
+    let dbInstaImplementation = InstaImplementation.load(
+      dbInstaAccount.instaImplementation
+    );
+    let contract = ImplementationContract.bind(
+      Address.fromString(dbInstaImplementation.id)
+    );
+    let connectorsM1Result = contract.try_connectorsM1();
+    if (connectorsM1Result.reverted) {
+      log.critical("connectorsM1() call failed at {}", [address.toHex()]);
+    }
+    dbInstaConnectorProxy.implementation = connectorsM1Result.value.toHex();
+    ensureInstaConnector(
+      connectorsM1Result.value,
+      createdAt,
+      dbVersion.id,
+      Address.fromString(dbVersion.instaConnectorProxy)
+    );
   }
   dbInstaConnectorProxy.createdAt = createdAt;
   dbInstaConnectorProxy.save();
 }
 
-export function createInstaConnectorV2(
-  proxyAddress: Address,
+export function ensureInstaConnector(
   address: Address,
-  version: string,
-  createdAt: BigInt
+  createdAt: BigInt,
+  version: string = "0",
+  proxyAddress: Address = zeroAddress
 ): void {
-  InstaConnectorV2Mapping.create(address);
-  createInstaConnector(proxyAddress, address, version, createdAt);
-}
-
-export function createInstaConnector(
-  proxyAddress: Address,
-  address: Address,
-  version: string,
-  createdAt: BigInt
-): void {
-  let dbInstaConnector = new InstaConnector(address.toHex());
-  dbInstaConnector.totalChiefs = BigInt.fromString("0");
-  dbInstaConnector.totalActiveChiefs = BigInt.fromString("0");
-  dbInstaConnector.totalConnectors = BigInt.fromString("0");
-  dbInstaConnector.totalActiveConnectors = BigInt.fromString("0");
-  dbInstaConnector.instaConnectorProxy = proxyAddress.toHex();
-  dbInstaConnector.version = version;
-  dbInstaConnector.createdAt = createdAt;
+  let dbInstaConnector = InstaConnector.load(address.toHex());
+  if (!dbInstaConnector) {
+    dbInstaConnector = new InstaConnector(address.toHex());
+    dbInstaConnector.totalChiefs = BigInt.fromString("0");
+    dbInstaConnector.totalActiveChiefs = BigInt.fromString("0");
+    dbInstaConnector.totalConnectors = BigInt.fromString("0");
+    dbInstaConnector.totalActiveConnectors = BigInt.fromString("0");
+    dbInstaConnector.createdAt = createdAt;
+  }
+  if (proxyAddress != zeroAddress) {
+    dbInstaConnector.instaConnectorProxy = proxyAddress.toHex();
+  }
+  if (version != "0") {
+    dbInstaConnector.version = version;
+  }
   dbInstaConnector.save();
 }
 

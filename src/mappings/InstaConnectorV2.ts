@@ -9,9 +9,11 @@ import {
   LogConnectorAdded,
   LogConnectorRemoved,
   LogConnectorUpdated
-} from "../../generated/templates/InstaConnectorV2/InstaConnectorV2";
+} from "../../generated/InstaConnectorV2/InstaConnectorV2";
+import { ensureInstaConnector } from "../entities/InstaConnector";
 
 export function handleController(event: LogController): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let cheifId: string = upsertChief(
     event.params.addr,
     event.address,
@@ -22,6 +24,7 @@ export function handleController(event: LogController): void {
 }
 
 export function handleConnectorAdded(event: LogConnectorAdded): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connectorIds: Array<string> = upsertConnector(
     event.params.connectorName,
     event.params.connectorNameHash,
@@ -33,6 +36,7 @@ export function handleConnectorAdded(event: LogConnectorAdded): void {
 }
 
 export function handleConnectorUpdated(event: LogConnectorUpdated): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connectorIds: Array<string> = upsertConnector(
     event.params.connectorName,
     event.params.connectorNameHash,
@@ -44,6 +48,7 @@ export function handleConnectorUpdated(event: LogConnectorUpdated): void {
 }
 
 export function handleConnectorRemoved(event: LogConnectorRemoved): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connectorId: string = deleteConnector(
     event.params.connectorName,
     event.params.connectorNameHash,

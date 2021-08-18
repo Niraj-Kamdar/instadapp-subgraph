@@ -5,6 +5,7 @@ import {
   upsertConnector,
   deleteConnector
 } from "../entities/Connector";
+import { ensureInstaConnector } from "../entities/InstaConnector";
 import { createLogConnectorAddedEvent } from "../entities/LogConnectorAddedEvent";
 import { createLogConnectorRemovedEvent } from "../entities/LogConnectorRemovedEvent";
 import { createLogConnectorUpdatedEvent } from "../entities/LogConnectorUpdatedEvent";
@@ -15,9 +16,10 @@ import {
   LogEnable,
   LogDisable,
   LogEnableStatic
-} from "./../../generated/templates/InstaConnectorV1/InstaConnectorV1";
+} from "./../../generated/InstaConnectorV1/InstaConnectorV1";
 
 export function handleAddController(event: LogAddController): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let cheifId: string = upsertChief(
     event.params.addr,
     event.address,
@@ -28,6 +30,7 @@ export function handleAddController(event: LogAddController): void {
 }
 
 export function handleRemoveController(event: LogRemoveController): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let cheifId: string = upsertChief(
     event.params.addr,
     event.address,
@@ -38,6 +41,7 @@ export function handleRemoveController(event: LogRemoveController): void {
 }
 
 export function handleEnableConnector(event: LogEnable): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connector: IConnector = getIConnector(event.params.connector);
   let connectorIds: Array<string> = upsertConnector(
     connector.name,
@@ -54,6 +58,7 @@ export function handleEnableConnector(event: LogEnable): void {
 }
 
 export function handleDisableConnector(event: LogDisable): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connector: IConnector = getIConnector(event.params.connector);
   let connectorId: string = deleteConnector(
     connector.name,
@@ -65,6 +70,7 @@ export function handleDisableConnector(event: LogDisable): void {
 }
 
 export function handleEnableStaticConnector(event: LogEnableStatic): void {
+  ensureInstaConnector(event.address, event.block.timestamp);
   let connector: IConnector = getIConnector(event.params.connector);
   let connectorIds: Array<string> = upsertConnector(
     connector.name,

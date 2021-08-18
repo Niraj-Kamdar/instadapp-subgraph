@@ -96,7 +96,7 @@ type InstaAccount implements IContract @entity {
 
 type InstaImplementation implements IContract @entity {
   id: ID!
-  instaAccount: InstaAccount!
+  instaAccount: InstaAccount
   defaultImplementation: Bytes  # Address
   implementations: [Implementation!] @derivedFrom(field: "instaImplementation")
   createdAt: BigInt!
@@ -132,8 +132,8 @@ type InstaConnector implements IContract @entity {
   totalActiveChiefs: BigInt!
   totalConnectors: BigInt!
   totalActiveConnectors: BigInt!
-  instaConnectorProxy: InstaConnectorProxy!
-  version: Version!
+  instaConnectorProxy: InstaConnectorProxy
+  version: Version
   createdAt: BigInt!
 }
 
