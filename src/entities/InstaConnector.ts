@@ -1,7 +1,4 @@
-import {
-  InstaConnectorProxy,
-  Version
-} from "./../../generated/schema";
+import { InstaConnectorProxy, Version } from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { InstaConnector } from "../../generated/schema";
 import { INSTA_CONNECTOR_V2_ADDRESS, ZERO_ADDRESS } from "../config";
@@ -18,13 +15,10 @@ export function createInstaConnectorProxy(
     ensureInstaConnector(address, createdAt, version, address);
     dbInstaConnectorProxy.implementation = address.toHex();
   } else {
-    let instaConnectorAddress: Address = Address.fromString(INSTA_CONNECTOR_V2_ADDRESS)
-    ensureInstaConnector(
-      instaConnectorAddress,
-      createdAt,
-      version,
-      address
+    let instaConnectorAddress: Address = Address.fromString(
+      INSTA_CONNECTOR_V2_ADDRESS
     );
+    ensureInstaConnector(instaConnectorAddress, createdAt, version, address);
     dbInstaConnectorProxy.implementation = instaConnectorAddress.toHex();
   }
   dbInstaConnectorProxy.createdAt = createdAt;
