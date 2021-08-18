@@ -1,24 +1,46 @@
+import { InstaConnectorProxy } from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { InstaConnectorV2 as InstaConnectorV2Mapping } from "../../generated/templates";
 import { InstaConnectorV1 as InstaConnectorV1Mapping } from "../../generated/templates";
 import { InstaConnector } from "../../generated/schema";
 
-export function createInstaConnector(
+export function createInstaConnectorProxy(
   address: Address,
   version: string,
   createdAt: BigInt
 ): void {
+  let dbInstaConnectorProxy = new InstaConnectorProxy(address.toHex());
   if (version == "1") {
     InstaConnectorV1Mapping.create(address);
-  } else {
-    InstaConnectorV2Mapping.create(address);
+    createInstaConnector(address, address, version, createdAt);
+    dbInstaConnectorProxy.implementation = address.toHex();
   }
+  dbInstaConnectorProxy.createdAt = createdAt;
+  dbInstaConnectorProxy.save();
+}
 
+export function createInstaConnectorV2(
+  proxyAddress: Address,
+  address: Address,
+  version: string,
+  createdAt: BigInt
+): void {
+  InstaConnectorV2Mapping.create(address);
+  createInstaConnector(proxyAddress, address, version, createdAt);
+}
+
+export function createInstaConnector(
+  proxyAddress: Address,
+  address: Address,
+  version: string,
+  createdAt: BigInt
+): void {
   let dbInstaConnector = new InstaConnector(address.toHex());
   dbInstaConnector.totalChiefs = BigInt.fromString("0");
   dbInstaConnector.totalActiveChiefs = BigInt.fromString("0");
   dbInstaConnector.totalConnectors = BigInt.fromString("0");
   dbInstaConnector.totalActiveConnectors = BigInt.fromString("0");
+  dbInstaConnector.instaConnectorProxy = proxyAddress.toHex();
   dbInstaConnector.version = version;
   dbInstaConnector.createdAt = createdAt;
   dbInstaConnector.save();

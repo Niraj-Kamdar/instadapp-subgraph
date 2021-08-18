@@ -42,7 +42,7 @@ type InstaIndex implements IContract @entity {
 type Version implements IContract @entity {
   id: ID! # version number
   instaAccount: InstaAccount!
-  instaConnector: InstaConnector!
+  instaConnectorProxy: InstaConnectorProxy!
   check: Bytes!  # Address
   instaIndex:  InstaIndex!
   createdAt: BigInt!
@@ -117,6 +117,13 @@ type Signature @entity {
   implementation: Implementation!
 }
 
+# Note: For V1 Proxy and implementation address will be same.
+type InstaConnectorProxy @entity {
+  id: ID!
+  implementation: InstaConnector
+  createdAt: BigInt!
+}
+
 type InstaConnector implements IContract @entity {
   id: ID!
   chiefs: [Chief!] @derivedFrom(field: "instaConnector")
@@ -125,6 +132,7 @@ type InstaConnector implements IContract @entity {
   totalActiveChiefs: BigInt!
   totalConnectors: BigInt!
   totalActiveConnectors: BigInt!
+  instaConnectorProxy: InstaConnectorProxy!
   version: Version!
   createdAt: BigInt!
 }

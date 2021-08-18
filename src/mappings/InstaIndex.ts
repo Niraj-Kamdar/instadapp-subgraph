@@ -8,6 +8,7 @@ import {
   LogNewAccount,
   LogAccountCreated
 } from "../../generated/InstaIndex/InstaIndex";
+import { createAccount, upsertAccountOwner } from "../entities/Account";
 import {
   createAccount,
   ensureOwner,

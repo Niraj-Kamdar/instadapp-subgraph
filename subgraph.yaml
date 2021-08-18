@@ -56,6 +56,8 @@ templates:
       abis:
         - name: InstaImplementation
           file: ./abis/InstaImplementation.json
+        - name: Implementation
+          file: ./abis/Implementation.json
       eventHandlers:
         - event: LogSetDefaultImplementation(indexed address,indexed address)
           handler: handleSetDefaultImplementation
