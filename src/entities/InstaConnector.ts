@@ -1,13 +1,10 @@
-import { Implementation as ImplementationContract } from "../../generated/InstaIndex/Implementation";
 import {
-  InstaAccount,
   InstaConnectorProxy,
-  InstaImplementation,
   Version
 } from "./../../generated/schema";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { InstaConnector } from "../../generated/schema";
-import { ZERO_ADDRESS } from "../config";
+import { INSTA_CONNECTOR_V2_ADDRESS, ZERO_ADDRESS } from "../config";
 
 let zeroAddress: Address = Address.fromString(ZERO_ADDRESS);
 
@@ -21,25 +18,14 @@ export function createInstaConnectorProxy(
     ensureInstaConnector(address, createdAt, version, address);
     dbInstaConnectorProxy.implementation = address.toHex();
   } else {
-    let dbVersion = Version.load(version);
-    let dbInstaAccount = InstaAccount.load(dbVersion.instaAccount);
-    let dbInstaImplementation = InstaImplementation.load(
-      dbInstaAccount.instaImplementation
-    );
-    let contract = ImplementationContract.bind(
-      Address.fromString(dbInstaImplementation.id)
-    );
-    let connectorsM1Result = contract.try_connectorsM1();
-    if (connectorsM1Result.reverted) {
-      log.critical("connectorsM1() call failed at {}", [address.toHex()]);
-    }
-    dbInstaConnectorProxy.implementation = connectorsM1Result.value.toHex();
+    let instaConnectorAddress: Address = Address.fromString(INSTA_CONNECTOR_V2_ADDRESS)
     ensureInstaConnector(
-      connectorsM1Result.value,
+      instaConnectorAddress,
       createdAt,
-      dbVersion.id,
-      Address.fromString(dbVersion.instaConnectorProxy)
+      version,
+      address
     );
+    dbInstaConnectorProxy.implementation = instaConnectorAddress.toHex();
   }
   dbInstaConnectorProxy.createdAt = createdAt;
   dbInstaConnectorProxy.save();
