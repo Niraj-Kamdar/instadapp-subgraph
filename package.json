@@ -5,9 +5,10 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "format": "prettier --write \"./**/*.{js,jsx,json,ts}\"",
-    "prepare:mainnet": "mustache configs/mainnet.json subgraph.template.yaml > subgraph.yaml && npm run codegen",
-    "prepare:matic": "mustache configs/matic.json subgraph.template.yaml > subgraph.yaml && npm run codegen",
-    "prepare:local": "mustache configs/local.json subgraph.template.yaml > subgraph.yaml && npm run codegen",
+    "compile": "node scripts/compile_templates.js",
+    "prepare:mainnet": "npm run compile mainnet && npm run codegen",
+    "prepare:matic": "npm run compile matic && npm run codegen",
+    "prepare:local": "npm run compile local && npm run codegen",
     "create:mainnet": "graph create niraj-kamdar/instadapp --node https://api.thegraph.com/deploy/",
     "create:matic": "graph create niraj-kamdar/instadapp-polygon --node https://api.thegraph.com/deploy/",
     "create:local": "graph create niraj-kamdar/instadapp-local --node http://127.0.0.1:8020",
@@ -23,6 +24,6 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
-    "mustache": "^4.2.0"
+    "nunjucks": "^3.2.3"
   }
 }

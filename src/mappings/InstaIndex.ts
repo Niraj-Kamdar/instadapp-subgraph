@@ -10,6 +10,7 @@ import {
 } from "../../generated/InstaIndex/InstaIndex";
 import { createAccount, upsertAccountOwner } from "../entities/Account";
 import {
+  createInstaIndex,
   ensureInstaIndex,
   getInstaListAddress,
   releaseLatestVersion,

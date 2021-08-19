@@ -10,7 +10,7 @@ export function ensureInstaIndex(
   createdAt: BigInt
 ): void {
   let dbInstaIndex = InstaIndex.load(instaIndexAddress.toHex());
-  if(!dbInstaIndex){
+  if (!dbInstaIndex) {
     let contract = InstaIndexContract.bind(instaIndexAddress);
     let masterResult = contract.try_master();
     if (masterResult.reverted) {
