@@ -1,3 +1,4 @@
+import { LogCastMigrate } from './../../generated/templates/InstaAccountV2/InstaAccountV2';
 import {
   LogCast,
   LogDisableUser,
@@ -28,4 +29,8 @@ export function handleDisableUser(event: LogDisableUser): void {
 
 export function handleCast(event: LogCast): void {
   createLogCastV2Event(event);
+}
+
+export function handleCastMigrate(event: LogCastMigrate): void {
+  createLogCastV2Event(event as LogCast);
 }

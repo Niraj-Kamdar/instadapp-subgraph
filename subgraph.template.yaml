@@ -169,4 +169,8 @@ templates:
           handler: handleDisableUser
         - event: LogCast(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
           handler: handleCast
+        {% if network == "matic" %}
+        - event: LogCastMigrate(indexed address,indexed address,uint256,string[],address[],string[],bytes[])
+          handler: handleCastMigrate
+        {% endif %}
       file: ./src/mappings/InstaAccountV2.ts

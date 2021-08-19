@@ -64,3 +64,4 @@ typings/
 build/
 generated/
 subgraph.yaml
+src/config.ts
