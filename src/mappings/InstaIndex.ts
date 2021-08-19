@@ -10,7 +10,7 @@ import {
 } from "../../generated/InstaIndex/InstaIndex";
 import { createAccount, upsertAccountOwner } from "../entities/Account";
 import {
-  createInstaIndex,
+  ensureInstaIndex,
   getInstaListAddress,
   releaseLatestVersion,
   updateMaster,
@@ -36,16 +36,19 @@ export function handleSetBasics(call: SetBasicsCall): void {
 }
 
 export function handleNewMaster(event: LogNewMaster): void {
+  ensureInstaIndex(event.address, event.block.timestamp);
   updateNewMaster(event.address, event.params.master);
   createLogNewMaster(event);
 }
 
 export function handleUpdateMaster(event: LogUpdateMaster): void {
+  ensureInstaIndex(event.address, event.block.timestamp);
   updateMaster(event.address, event.params.master);
   createLogUpdateMaster(event);
 }
 
 export function handleNewCheck(event: LogNewCheck): void {
+  ensureInstaIndex(event.address, event.block.timestamp);
   updateCheckAddress(
     event.params.accountVersion.toString(),
     event.params.check
@@ -54,6 +57,7 @@ export function handleNewCheck(event: LogNewCheck): void {
 }
 
 export function handleNewAccount(event: LogNewAccount): void {
+  ensureInstaIndex(event.address, event.block.timestamp);
   let version = releaseLatestVersion(event.address);
   if (version != "") {
     createVersion(

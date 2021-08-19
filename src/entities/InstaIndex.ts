@@ -1,8 +1,51 @@
 import { ZERO_ADDRESS } from "./../config";
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { InstaIndex } from "../../generated/schema";
+import { InstaIndex as InstaIndexContract } from "../../generated/InstaIndex/InstaIndex";
 import { createInstaList } from "./InstaList";
 import { createVersion } from "./Version";
+
+export function ensureInstaIndex(
+  instaIndexAddress: Address,
+  createdAt: BigInt
+): void {
+  let dbInstaIndex = InstaIndex.load(instaIndexAddress.toHex());
+  if(!dbInstaIndex){
+    let contract = InstaIndexContract.bind(instaIndexAddress);
+    let masterResult = contract.try_master();
+    if (masterResult.reverted) {
+      log.critical("master() call (address) reverted for {}!", [
+        instaIndexAddress.toHex()
+      ]);
+    }
+    let instaListResult = contract.try_list();
+    if (instaListResult.reverted) {
+      log.critical("list() call (address) reverted for {}!", [
+        instaIndexAddress.toHex()
+      ]);
+    }
+    let instaAccountResult = contract.try_account(BigInt.fromString("1"));
+    if (instaAccountResult.reverted) {
+      log.critical("accounts(1) call (address) reverted for {}!", [
+        instaIndexAddress.toHex()
+      ]);
+    }
+    let instaConnectorResult = contract.try_connectors(BigInt.fromString("1"));
+    if (instaConnectorResult.reverted) {
+      log.critical("connectors(1) call (address) reverted for {}!", [
+        instaIndexAddress.toHex()
+      ]);
+    }
+    createInstaIndex(
+      instaIndexAddress,
+      masterResult.value,
+      instaListResult.value,
+      instaAccountResult.value,
+      instaConnectorResult.value,
+      createdAt
+    );
+  }
+}
 
 export function createInstaIndex(
   instaIndexAddress: Address,
