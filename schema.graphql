@@ -2,23 +2,35 @@
 # Interfaces
 #################################################
 
+# Smart-contract Interfaces
+
 interface ILog {
-  id: ID!
-  timestamp: BigInt!
+  id: ID!  # {transaction_hash}-{logId}
+  timestamp: BigInt!  
 }
 
 interface IContract {
-  id: ID!
+  id: ID!  # Address of the contract (generally)
   createdAt: BigInt!
 }
 
+# Editable enitity Interfaces
+
 interface IEditableParent {
+  """
+  Parent Interface to keep track of all the historical modifications
+  """
   id: ID!
   latestVersion: BigInt!
 }
 
 interface IEditable {
-  id: ID!
+  """
+  Child Interface to store metadata necessary to get view of the historical snapshot of the entity
+  Note: this version is different than the version of InstaAccount. 
+  The version here is only used for tracking modifications of the particular entity
+  """
+  id: ID!  # {parentId}-{version}
   version: BigInt!
   createdAt: BigInt!
   deletedAt: BigInt
@@ -28,11 +40,13 @@ interface IEditable {
 # High level Entities
 #################################################
 
-# index setBasics callHandler since no event emited
 type InstaIndex implements IContract @entity {
-  id: ID!
-  master: Bytes!  # Address
-  newMaster: Bytes!  # Address
+  """
+  @dev: This is indexed with setBasics callHandler or with contract calls on other eventHandlers
+  """
+  id: ID!  # Address of the InstaIndex
+  master: Bytes!  # Address of master
+  newMaster: Bytes!  # Address of newMaster
   instaList: InstaList!
   versions: [Version!] @derivedFrom(field: "instaIndex")
   latestVersion: Version!
@@ -40,39 +54,39 @@ type InstaIndex implements IContract @entity {
 }
 
 type Version implements IContract @entity {
-  id: ID! # version number
+  id: ID!  # version number
   instaAccount: InstaAccount!
   instaConnectorProxy: InstaConnectorProxy!
-  check: Bytes!  # Address
+  check: Bytes!  # Address of check module
   instaIndex:  InstaIndex!
   createdAt: BigInt!
 }
 
 type InstaList implements IContract @entity {
-  id: ID!
+  id: ID!  # Address of the InstaList
   instaIndex: InstaIndex!
-  accounts: [Account!] @derivedFrom(field: "instaList")
+  accounts: [Account!] @derivedFrom(field: "instaList")  # List of all DSA
   totalAccounts: BigInt!
   createdAt: BigInt!
 }
 
 type Account @entity {
-  id: ID! # address
+  id: ID!  # Account address
   accountNumber: BigInt!
   instaList: InstaList!
-  version: Version!
+  version: Version!  # InstaAccount version of the account
   owners: [AccountOwnerList!] @derivedFrom(field: "account")
-  logCasts: [LogCastEvent!] @derivedFrom(field: "account")
+  logCasts: [LogCastEvent!] @derivedFrom(field: "account")  # List of all the casts performed by the account
   createdAt: BigInt!
 }
 
 type Owner @entity {
-  id: ID!
+  id: ID!  # Owner Address
   accounts: [AccountOwnerList!] @derivedFrom(field: "owner")
 }
 
 type AccountOwnerList implements IEditableParent @entity {
-  id: ID! # accountId-ownerId
+  id: ID!  # accountId-ownerId
   account: Account!
   owner: Owner!
   accountOwners: [AccountOwner!]
@@ -80,7 +94,7 @@ type AccountOwnerList implements IEditableParent @entity {
 }
 
 type AccountOwner implements IEditable @entity {
-  id: ID! #accountId-ownerId-version
+  id: ID! # accountId-ownerId-version
   accountOwnerList: AccountOwnerList!
   version: BigInt!
   createdAt: BigInt!
@@ -88,22 +102,22 @@ type AccountOwner implements IEditable @entity {
 }
 
 type InstaAccount implements IContract @entity {
-  id: ID!
+  id: ID!  # Address of the InstaAccount
   version: Version!
   instaImplementation: InstaImplementation  # Only available for V2
   createdAt: BigInt!
 }
 
 type InstaImplementation implements IContract @entity {
-  id: ID!
+  id: ID!  # Address of the  InstaImplementation
   instaAccount: InstaAccount
-  defaultImplementation: Bytes  # Address
+  defaultImplementation: Bytes  # Address of the defaultImplementation
   implementations: [Implementation!] @derivedFrom(field: "instaImplementation")
   createdAt: BigInt!
 }
 
 type Implementation @entity {
-  id: ID!
+  id: ID!  # Address of the Implementation
   signatures: [Signature!] @derivedFrom(field: "implementation")
   totalSignatures: Int!
   instaImplementation: InstaImplementation
@@ -112,20 +126,20 @@ type Implementation @entity {
 }
 
 type Signature @entity {
-  id: ID!
+  id: ID!  # {implementationAddress}-{signature}
   signature: Bytes!
   implementation: Implementation!
 }
 
 # Note: For V1 Proxy and implementation address will be same.
 type InstaConnectorProxy @entity {
-  id: ID!
+  id: ID!  # InstaConnector proxy address (same as InstaConnector address in case of V1)
   implementation: InstaConnector
   createdAt: BigInt!
 }
 
 type InstaConnector implements IContract @entity {
-  id: ID!
+  id: ID!  # InstaConnector address
   chiefs: [Chief!] @derivedFrom(field: "instaConnector")
   connectors: [Connector!] @derivedFrom(field: "instaConnector")
   totalChiefs: BigInt!
@@ -138,14 +152,14 @@ type InstaConnector implements IContract @entity {
 }
 
 type ChiefList implements IEditableParent @entity {
-  id: ID!
+  id: ID!  # Address of the chief
   chiefs: [Chief!] @derivedFrom(field: "chiefList")
   latestVersion: BigInt!
 }
 
 type Chief implements IEditable @entity {
-  id: ID!
-  address: Bytes!  # Address
+  id: ID!  # {chiefId}-{version}
+  address: Bytes!  # Address of the chief
   isActive: Boolean!
   instaConnector: InstaConnector!
   chiefList: ChiefList!
@@ -155,7 +169,7 @@ type Chief implements IEditable @entity {
 }
 
 type ConnectorList implements IEditableParent @entity {
-  id: ID!  # same as nameHash
+  id: ID!  # same as name
   name: String!
   nameHash: Bytes!
   connectors: [Connector!] @derivedFrom(field: "connectorList")
@@ -163,8 +177,8 @@ type ConnectorList implements IEditableParent @entity {
 }
 
 type Connector implements IEditable @entity {
-  id: ID!  
-  address: Bytes!  # Address
+  id: ID!  # {connectorId}-{version}
+  address: Bytes!  # Address of the connector
   instaConnector: InstaConnector!
   connectorList: ConnectorList!
   isStatic: Boolean
@@ -179,20 +193,20 @@ type Connector implements IEditable @entity {
 
 type LogNewMasterEvent implements ILog @entity {
   id: ID!
-  master: Bytes!  # Address
+  master: Bytes!  # Address of the master
   timestamp: BigInt!
 }
 
 type LogUpdateMasterEvent implements ILog @entity {
   id: ID!
-  master: Bytes!  # Address
+  master: Bytes!  # Address of the master
   timestamp: BigInt!
 }
 
 type LogNewCheckEvent implements ILog @entity {
   id: ID!
   version: BigInt!
-  check: Bytes!  # Address
+  check: Bytes!  # Address of the check module
   timestamp: BigInt!
 }
 
@@ -204,18 +218,18 @@ type LogNewAccountEvent implements ILog @entity {
 
 type LogAccountCreatedEvent implements ILog @entity {
   id: ID!
-  sender: Bytes!  # Address
-  owner: Bytes!  # Address
-  account: Bytes!  # Address
-  origin: Bytes!  # Address
-  version: String! # (Event doesn't emit)
+  sender: Bytes!  # Address of the sender
+  owner: Bytes!  # Address of the owner
+  account: Bytes!  # Address of the account
+  origin: Bytes!  # Address of the origin
+  version: String!
   timestamp: BigInt!
 }
 
 type LogSetDefaultImplementationEvent implements ILog @entity {
   id: ID!
-  oldImplementation: Bytes!  # Address
-  newImplementation: Bytes!  # Address
+  oldImplementation: Bytes!  # Address of the old default implementation
+  newImplementation: Bytes!  # Address of the new default implementation
   timestamp: BigInt!
 }
 
@@ -234,7 +248,7 @@ type LogRemoveImplementationEvent implements ILog @entity {
 type LogSpell @entity {
   id: ID!  # logCastid + spellIndex
   targetName: String!
-  target: Bytes!  # Address
+  target: Bytes!  # Address of the target
   eventName: String!
   eventParams: Bytes!
   cast: LogCastEvent!
@@ -243,9 +257,9 @@ type LogSpell @entity {
 type LogCastEvent implements ILog @entity {
   id: ID!
   account: Account!
-  origin: Bytes!  # Address
-  sender: Bytes!  # Address
-  value: BigInt!
+  origin: Bytes!  # Address of the origin
+  sender: Bytes!  # Address of the sender
+  value: BigInt!  # ETH value
   spells: [LogSpell!] @derivedFrom(field: "cast")
   totalSpells: BigInt
   timestamp: BigInt!
