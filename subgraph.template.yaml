@@ -123,7 +123,7 @@ dataSources:
         - event: LogConnectorUpdated(indexed bytes32,string,indexed address,indexed address)
           handler: handleConnectorUpdated
         - event: LogConnectorRemoved(indexed bytes32,string,indexed address)
-          handler: handlerConnectorRemoved
+          handler: handleConnectorRemoved
       file: ./src/mappings/InstaConnectorV2.ts
 
 templates:
