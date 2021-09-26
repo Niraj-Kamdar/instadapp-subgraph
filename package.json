@@ -8,13 +8,16 @@
     "compile": "node scripts/compile_templates.js",
     "prepare:mainnet": "npm run compile mainnet && npm run codegen",
     "prepare:matic": "npm run compile matic && npm run codegen",
+    "prepare:arbitrum": "npm run compile arbitrum && npm run codegen",
     "prepare:local": "npm run compile local && npm run codegen",
     "create:mainnet": "graph create niraj-kamdar/instadapp --node https://api.thegraph.com/deploy/",
     "create:matic": "graph create niraj-kamdar/instadapp-polygon --node https://api.thegraph.com/deploy/",
     "create:local": "graph create niraj-kamdar/instadapp-local --node http://127.0.0.1:8020",
     "deploy:mainnet": "graph deploy niraj-kamdar/instadapp --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:matic": "graph deploy niraj-kamdar/instadapp-polygon --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:local": "graph deploy niraj-kamdar/instadapp-local --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+    "deploy:arbitrum": "graph deploy niraj-kamdar/instadapp-arbitrum --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:local": "graph deploy niraj-kamdar/instadapp-local --ipfs http://localhost:5001 --node http://127.0.0.1:8020",
+    "deploy:studio:mainnet": "graph deploy --studio instadapp-mainnet"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.20.1",

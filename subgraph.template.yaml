@@ -70,6 +70,7 @@ dataSources:
           handler: handleRemoveImplementation
       file: ./src/mappings/InstaImplementation.ts
 
+  {% if network != "arbitrum-one" %}
   - kind: ethereum/contract
     name: InstaConnectorV1
     network: {{network}}
@@ -99,6 +100,7 @@ dataSources:
         - event: LogEnableStatic(indexed address)
           handler: handleEnableStaticConnector
       file: ./src/mappings/InstaConnectorV1.ts
+  {% endif %}
 
   - kind: ethereum/contract
     name: InstaConnectorV2
